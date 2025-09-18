@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calcolo Raggio Centro Gola</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+  <div class="container pt-5">
+    <div class="card shadow-lg">
+      <div class="card-body">
+        <h3 class="card-title mb-4 text-center text-primary">Calcolo Raggio Centro Gola</h3>
+
+        <div class="mb-3">
+          <label for="tipo" class="form-label text-primary">Tipo di anello:</label>
+          <select id="tipo" class="form-select">
+            <option value="IR">IR (Anello Interno)</option>
+            <option value="AR">AR (Anello Esterno)</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="fondo" class="form-label text-primary">Fondo pista (mm):</label>
+          <input type="number" class="form-control" id="fondo" step="0.001" min="0.001">
+        </div>
+
+        <div class="mb-3">
+          <label for="raggio" class="form-label text-primary">Inserisci i valori della sfera (mm):</label>
+          <input type="number" class="form-control" id="raggio1" step="0.001" min="0.001">
+          <input type="number" class="form-control" id="raggio2" step="0.001" min="0.001">
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-success w-50 me-2" onclick="calcolaCentroGola()">Calcola</button>
+          <button class="btn btn-primary w-50 me-2 " onclick="azzeraCampi()">Azzera</button>
+          <button class="btn btn-secondary w-50 me-2" onclick="info()">Informazioni</button>
+          <button class="btn btn-light w-50 me-2" onclick="calcolatrice()"><img
+              src="https://img.icons8.com/ios-filled/50/000000/calculator.png" alt="Calculator" width="24"
+              height="24"></button>
+
+        </div>
+
+        <div class="mt-4">
+          <p class="fw-bold fs-5 text-center" id="risultato"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Per le sweetAlert -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    function calcolaCentroGola() {
+      const tipo = document.getElementById("tipo").value;
+      const fondo = parseFloat(document.getElementById("fondo").value);
+      const raggio1 = parseFloat(document.getElementById("raggio1").value);
+      const raggio2 = parseFloat(document.getElementById("raggio2").value);
+      let raggio = (raggio1 + raggio2) / 2;
+      if (isNaN(fondo) || isNaN(raggio)) {
+        document.getElementById("risultato").textContent = "Inserisci valori validi!";
+        return;
+      }
+
+      let centroGola;
+      if (tipo === "IR") {
+        centroGola = (fondo + raggio) / 2;
+      } else {
+        centroGola = (fondo - raggio) / 2;
+      }
+
+      const risultatoArrotondato = centroGola.toFixed(3);
+      document.getElementById("risultato").textContent = "Centro Gola: " + risultatoArrotondato + " mm";
+    }
+
+    function azzeraCampi() {
+      document.getElementById("fondo").value = '';
+      document.getElementById("raggio1").value = '';
+      document.getElementById("raggio2").value = '';
+      document.getElementById("risultato").textContent = '';
+      document.getElementById("tipo").value = 'IR';
+    }
+    /*function info() {
+      Swal.fire({
+        title: "Calcolo differenza spostamento:",
+        html: '<h4>da AR ad AR e IR ad IR = R1-R2;<br> da AR ad IR e IR ad AR = R1+R2;</h4>',
+        icon: "info",
+        //rende piu piccolo
+        popup: 'small-alert'
+      });
+    }*/
+    function info() {
+      Swal.fire({
+        title: '<span style="color: #007bff;">Calcolo differenza spostamento:</span>',
+        html: `
+      <div style="font-size: 14px; color: #333;">
+        <span style="color: green;">da AR ad AR e IR ad IR</span> = <strong>R1 - R2</strong><br>
+        <span style="color: red;">da AR ad IR e IR ad AR</span> = <strong>R1 + R2</strong>
+      </div>
+    `,
+        icon: "info",
+        customClass: {
+          popup: 'small-alert'
+        }
+      });
+    }
+    function calcolatrice() {
+      Swal.fire({
+        title: '<span style="color: #007bff;">Apri calcolatrice?</span>',
+        showCancelButton: true,
+        confirmButtonText: 'Apri',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = 'calculator://'; // Solo se un protocol handler è registrato
+        }
+      });
+    }
+  </script>
+  <script>
+  let valoriCentroGola = [];
+
+  // Intercetta il bottone "Calcola" senza modificare la funzione originale
+  const originalCalcola = calcolaCentroGola;
+  calcolaCentroGola = function () {
+    originalCalcola();
+
+    const risultatoTesto = document.getElementById("risultato").textContent;
+    const match = risultatoTesto.match(/([\d.]+) mm/);
+    if (match) {
+      const valore = parseFloat(match[1]);
+      if (!isNaN(valore)) {
+        valoriCentroGola.push(valore);
+        if (valoriCentroGola.length > 2) {
+          valoriCentroGola.shift(); // mantiene solo gli ultimi 2
+        }
+      }
+    }
+  };
+
+  // Aggiungiamo un pulsante per sommare i due valori memorizzati
+  const btnSomma = document.createElement("button");
+  btnSomma.textContent = "Somma Ultimi 2";
+  btnSomma.className = "btn btn-warning w-100 mt-3";
+  btnSomma.onclick = function () {
+    if (valoriCentroGola.length < 2) {
+      Swal.fire("Attenzione", "Devi calcolare almeno 2 valori prima!", "warning");
+    } else {
+      const somma = (valoriCentroGola[0] + valoriCentroGola[1]).toFixed(3);
+      Swal.fire("Somma Ultimi 2 Valori", "Risultato: " + somma + " mm", "success");
+    }
+  };
+
+  window.addEventListener("load", () => {
+    document.querySelector(".card-body").appendChild(btnSomma);
+  });
+</script>
+
+
+</body>
+
+</html>
