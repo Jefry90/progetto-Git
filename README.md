@@ -1,97 +1,103 @@
-📐 Calcolo Raggio Centro Gola
+# 📐 Calcolo Raggio Centro Gola
 
-Un’applicazione web interattiva sviluppata in HTML, CSS, JavaScript e Bootstrap, pensata per calcolare rapidamente il Centro Gola di un anello (interno o esterno) e tenere traccia dei calcoli effettuati.
+Un'applicazione **web interattiva** sviluppata in HTML, CSS, JavaScript e Bootstrap, pensata per calcolare rapidamente il **Centro Gola** di un anello (interno o esterno) e tenere traccia dei calcoli effettuati.
 
-🚀 Funzionalità principali
+## 🚀 Funzionalità Principali
 
-Calcolo del Centro Gola
-Inserisci:
+### Calcolo del Centro Gola
+- **Input richiesti:**
+  - Tipo di anello (`IR` interno o `AR` esterno)
+  - Fondo pista (mm)
+  - Due valori del raggio sfera
+- **Output:** Centro gola calcolato con precisione a tre decimali
 
-Tipo di anello (IR interno o AR esterno)
+### Storico dei Calcoli
+- ✅ Salvataggio automatico in **LocalStorage**
+- ✅ Consultazione storico con data/ora e dettagli completi
+- ✅ Eliminazione singoli calcoli o cancellazione completa
+- ✅ Persistenza dei dati tra le sessioni
 
-Fondo pista (mm)
+### Operazioni sui Valori Salvati
+- ➕ Addizione tra due calcoli dello storico
+- ➖ Sottrazione tra due calcoli dello storico
+- 💾 Salvataggio del risultato come nuovo calcolo con nota
 
-Due valori del raggio sfera
-L’app calcola il centro gola e lo mostra con tre decimali di precisione.
+### Interfaccia User-Friendly
+- 📱 Design responsive con **Bootstrap 5**
+- 🎨 Icone intuitive con **Bootstrap Icons**
+- 🔔 Popup interattivi con **SweetAlert2**
+- ⚡ Navigazione fluida e intuitiva
 
-Storico dei calcoli
+## 🖼️ Anteprima Interfaccia
 
-Salvataggio automatico di ogni calcolo in LocalStorage
+- **Schermata principale** con selettori e input per il calcolo
+- **Storico calcoli** laterale con operazioni sui valori salvati
+- **Notifiche popup** per errori, conferme e risultati
 
-Storico consultabile con data/ora e dettagli
+## 🛠️ Tecnologie Utilizzate
 
-Possibilità di eliminare singoli calcoli o cancellare tutto
+| Tecnologia | Versione | Utilizzo |
+|------------|----------|----------|
+| **HTML5** | - | Struttura della pagina |
+| **Bootstrap** | 5.x | Layout responsive e componenti UI |
+| **Bootstrap Icons** | Latest | Iconografia |
+| **SweetAlert2** | Latest | Sistema di notifiche |
+| **JavaScript** | Vanilla ES6+ | Logica applicativa e gestione dati |
 
-Operazioni sui valori salvati
+## 📁 Struttura del Codice
 
-Seleziona due calcoli dallo storico e somma/sottrai i loro valori
+```
+centro_gola_improved.html
+├── HTML Structure
+│   ├── Form di input
+│   ├── Pulsanti di controllo
+│   └── Container storico calcoli
+├── CSS Styling
+│   ├── Bootstrap 5 (CDN)
+│   └── Stili personalizzati
+└── JavaScript Logic
+    ├── calcolaCentroGola()      # Calcolo principale
+    ├── aggiornaStorico()        # Gestione storico
+    ├── aggiornaSelectValori()   # Aggiornamento select
+    ├── eseguiOperazione()       # Operazioni tra valori
+    └── Utility functions        # Funzioni di supporto
+```
 
-Salva il risultato come nuovo calcolo con nota
+## 🧩 Requisiti di Sistema
 
-Interfaccia user-friendly
+- **Browser moderno** (Chrome 90+, Edge 90+, Firefox 88+, Safari 14+)
+- **Connessione Internet** (per CDN Bootstrap e SweetAlert2)
+- **LocalStorage abilitato** (per persistenza dati)
 
-Design responsive con Bootstrap 5
+## ▶️ Guida all'Utilizzo
 
-Icone intuitive con Bootstrap Icons
+### 1. Avvio dell'Applicazione
+```bash
+# Apri il file direttamente nel browser
+open centro_gola_improved.html
+```
 
-Popup interattivi con SweetAlert2
+### 2. Esecuzione di un Calcolo
+1. Seleziona il **tipo di anello** (IR/AR)
+2. Inserisci il **fondo pista** in millimetri
+3. Inserisci i **due valori del raggio sfera**
+4. Clicca **"Calcola"** per ottenere il risultato
+5. Il calcolo viene automaticamente salvato nello storico
 
-🖼️ Anteprima interfaccia
+### 3. Gestione dello Storico
+- **Visualizzazione:** I calcoli appaiono automaticamente nella sezione destra
+- **Eliminazione singola:** Clicca sull'icona 🗑️ accanto al calcolo
+- **Cancellazione completa:** Usa il pulsante "Cancella Storico"
 
-Schermata principale con selettori e input per il calcolo
+### 4. Operazioni tra Valori
+1. Seleziona **due calcoli** dai menu a tendina
+2. Scegli l'**operazione** (+ o -)
+3. Clicca **"Esegui Operazione"**
+4. Il risultato viene salvato automaticamente con nota descrittiva
 
-Storico calcoli sulla destra con possibilità di operare sui valori salvati
+## 🔒 Persistenza dei Dati
 
-Notifiche popup per errori, conferme e risultati
-
-🛠️ Tecnologie usate
-
-HTML5 per la struttura
-
-Bootstrap 5 per lo stile e il layout responsive
-
-Bootstrap Icons per le icone
-
-SweetAlert2 per i popup di notifica
-
-JavaScript vanilla per la logica di calcolo e la gestione dello storico
-
-📄 Struttura del codice
-
-HTML
-Contiene la struttura della pagina, i form di input, i pulsanti e i contenitori dello storico.
-
-CSS
-Utilizza principalmente Bootstrap, con poche regole personalizzate per lo stile di storico e pulsanti.
-
-JavaScript
-
-calcolaCentroGola(): esegue il calcolo principale
-
-aggiornaStorico() / aggiornaSelectValori(): aggiorna lo storico e le opzioni dei <select>
-
-eseguiOperazione(): esegue addizione o sottrazione tra due valori salvati
-
-Funzioni per azzerare campi, cancellare lo storico e mostrare popup di informazioni
-
-🧩 Requisiti
-
-Browser moderno (Chrome, Edge, Firefox, Safari)
-
-Connessione Internet (per caricare Bootstrap e SweetAlert2 da CDN)
-
-▶️ Utilizzo
-
-Apri il file centro_gola_improved.html in un browser.
-
-Inserisci i valori richiesti.
-
-Clicca Calcola per ottenere il risultato.
-
-Consulta lo storico a destra per vedere i calcoli passati.
-
-Usa i menu a tendina per fare operazioni tra valori salvati.
-
-🔒 Persistenza dei dati
-
-I calcoli sono salvati in LocalStorage, quindi rimangono disponibili finché non vengono eliminati manualmente o finché non si svuota la cache del browser.
+I calcoli sono memorizzati nel **LocalStorage** del browser, garantendo:
+- ✅ Disponibilità tra sessioni diverse
+- ✅ Accesso offline ai dati salvati
+- ⚠️ Perdita dati solo con svuotamento cache o eliminazione manuale
