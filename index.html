@@ -6,46 +6,168 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Calcolo Raggio Centro Gola</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <style>
+    .calc-history {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      background: #f8f9fa;
+      border-left: 4px solid #007bff;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    .btn-calculator {
+      background: linear-gradient(45deg, #007bff, #0056b3);
+      border: none;
+      color: white;
+    }
+
+    .navbar-brand {
+      font-weight: bold;
+    }
+
+    #risultato {
+      display: none;
+    }
+  </style>
 </head>
 
+
 <body class="bg-light">
-
-  <div class="container pt-5">
-    <div class="card shadow-lg">
-      <div class="card-body">
-        <h3 class="card-title mb-4 text-center text-primary">Calcolo Raggio Centro Gola</h3>
-
-        <div class="mb-3">
-          <label for="tipo" class="form-label text-primary">Seleziona il tipo di anello:</label>
-          <select id="tipo" class="form-select">
-            <option value="IR">IR (Anello Interno)</option>
-            <option value="AR">AR (Anello Esterno)</option>
-          </select>
+  <!-- intestazione con icona impostazione -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <div class="container">
+      <span class="navbar-brand">
+        <i class="bi bi-gear"></i> Calcolo Centro Gola Pro
+      </span>
+    </div>
+  </nav>
+  <!-- contenitore principale-->
+  <div class="container">
+    <div class="row">
+      <!-- Colonna principale per il calcolo -->
+      <div class="col-lg-8">
+        <div class="card shadow-lg">
+          <div class="card-body">
+            <h3 class="card-title mb-4 text-center text-primary">
+              <!-- icona calcolatrice -->
+              <i class="bi bi-calculator"></i>
+              Calcolo Raggio Centro Gola
+            </h3>
+            <!-- selezione tipo anello -->
+            <div class="mb-3">
+              <label for="tipo" class="form-label text-primary">Seleziona il tipo di anello:</label>
+              <select id="tipo" class="form-select">
+                <option value="IR">IR (Anello Interno)</option>
+                <option value="AR">AR (Anello Esterno)</option>
+              </select>
+            </div>
+            <!-- valore fondo pista -->
+            <div class="mb-3">
+              <label for="fondo" class="form-label text-primary">Fondo pista (mm):</label>
+              <input type="number" class="form-control" id="fondo" step="0.001" min="0.001"
+                placeholder="Inserisci fondo pista">
+            </div>
+            <!-- valori della sfera -->
+            <div class="mb-3">
+              <label for="raggio" class="form-label text-primary">Inserisci i valori della sfera (mm):</label>
+              <input type="number" class="form-control mb-2" id="raggio1" step="0.001" min="0.001"
+                placeholder="Valore 1">
+              <input type="number" class="form-control" id="raggio2" step="0.001" min="0.001" placeholder="Valore 2">
+            </div>
+            <!-- div dei bottoni -->
+            <div class="row g-1 mb-3">
+              <!-- 1 bottone calcola -->
+              <div class="col-4">
+                <button class="btn btn-success w-100" onclick="calcolaCentroGola()">
+                  <i class="bi bi-calculator"></i> Calcola
+                </button>
+              </div>
+              <!-- 2 bottone azzera campi -->
+              <div class="col-4">
+                <button class="btn btn-primary w-100" onclick="azzeraCampi()">
+                  <i class="bi bi-arrow-clockwise"></i> Azzera
+                </button>
+              </div>
+              <!-- 3 bottone informazioni sui calcoli -->
+              <div class="col-4">
+                <button class="btn btn-secondary w-100" onclick="info()">
+                  <i class="bi bi-info-circle"></i> Info
+                </button>
+              </div>
+            </div>
+            <!-- display che si vede solo con i risultati -->
+            <div class="mt-4">
+              <p class="fw-bold fs-5 text-center alert alert-info" id="risultato"></p>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div class="mb-3">
-          <label for="fondo" class="form-label text-primary">Fondo pista (mm):</label>
-          <input type="number" class="form-control" id="fondo" step="0.001" min="0.001">
-        </div>
+      <!-- Colonna per lo storico e le operazioni -->
+      <div class="col-lg-4">
+        <div class="card shadow-lg">
+          <div class="card-body">
+            <h5 class="card-title text-primary">
+              <i class="bi bi-clock-history"></i> Storico Calcoli
+            </h5>
 
-        <div class="mb-3">
-          <label for="raggio" class="form-label text-primary">Inserisci i valori della sfera (mm):</label>
-          <input type="number" class="form-control" id="raggio1" step="0.001" min="0.001">
-          <input type="number" class="form-control" id="raggio2" step="0.001" min="0.001">
-        </div>
+            <!-- Controlli per lo storico -->
+            <div class="mb-3">
+              <div class="row g-2">
+                <div class="col-6">
+                  <button class="btn btn-outline-danger btn-sm w-100" onclick="cancellaStorico()">
+                    <i class="bi bi-trash"></i> Cancella Tutto
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- div dentro storici da ricordare -->
+            <div id="storico" class="calc-history">
+              <p class="text-muted text-center">Nessun calcolo salvato</p>
+            </div>
+            <!-- separatore -->
+            <hr>
 
-        <div class="d-flex justify-content-between">
-          <button class="btn btn-success w-50 me-2" onclick="calcolaCentroGola()">Calcola</button>
-          <button class="btn btn-primary w-50 me-2 " onclick="azzeraCampi()">Azzera</button>
-          <button class="btn btn-secondary w-50 me-2" onclick="info()">Informazioni</button>
-          <button class="btn btn-light w-50 me-2" onclick="calcolatrice()"><img
-              src="https://img.icons8.com/ios-filled/50/000000/calculator.png" alt="Calculator" width="24"
-              height="24"></button>
+            <h6 class="text-primary">
+              <i class="bi bi-calculator-fill"></i> Operazioni con Valori Salvati
+            </h6>
 
-        </div>
+            <div class="mb-2">
+              <label for="valore1Select" class="form-label">Primo valore</label>
+              <select id="valore1Select" class="form-select form-select-sm">
+                <option value="">Seleziona un valore</option>
+              </select>
+            </div>
 
-        <div class="mt-4">
-          <p class="fw-bold fs-5 text-center" id="risultato"></p>
+            <div class="mb-2">
+              <label for="operazioneSelect" class="form-label">Scegli un Operazione</label>
+              <select id="operazioneSelect" class="form-select form-select-sm">
+                <option value="+">Addizione</option>
+                <option value="-">Sottrazione</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="valore2Select" class="form-label">Secondo valore</label>
+              <select id="valore2Select" class="form-select form-select-sm">
+                <option value="">Seleziona secondo valore</option>
+              </select>
+            </div>
+
+            <button class="btn btn-info btn-sm w-100" onclick="eseguiOperazione()">
+              <i class="bi bi-play-fill"></i> Esegui Operazione
+            </button>
+
+            <div class="mt-2">
+              <small id="risultatoOperazione" class="text-success fw-bold"></small>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -53,18 +175,30 @@
 
   <!-- Per le sweetAlert -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <script>
+    // Database simulato con localStorage
+    let storicoCalcoli = JSON.parse(localStorage.getItem('storicoCalcoli')) || [];
+
+    // Carica lo storico all'avvio
+    document.addEventListener('DOMContentLoaded', function () {
+      aggiornaStorico();
+      aggiornaSelectValori();
+    });
+
     function calcolaCentroGola() {
       const tipo = document.getElementById("tipo").value;
       const fondo = parseFloat(document.getElementById("fondo").value);
       const raggio1 = parseFloat(document.getElementById("raggio1").value);
       const raggio2 = parseFloat(document.getElementById("raggio2").value);
-      let raggio = (raggio1 + raggio2) / 2;
-      if (isNaN(fondo) || isNaN(raggio)) {
-        document.getElementById("risultato").textContent = "Inserisci valori validi!";
+      if (isNaN(fondo) || isNaN(raggio1) || isNaN(raggio2)) {
+        //CONTROLLA CHE SIANO NUMERI VALIDI
+        Swal.fire('Errore', 'Inserisci tutti i valori numerici validi!', 'error');
         return;
       }
-
+      // calcola raggio 
+      let raggio = (raggio1 + raggio2) / 2;
+      // calcola centro gola
       let centroGola;
       if (tipo === "IR") {
         centroGola = (fondo + raggio) / 2;
@@ -73,91 +207,270 @@
       }
 
       const risultatoArrotondato = centroGola.toFixed(3);
-      document.getElementById("risultato").textContent = "Centro Gola: " + risultatoArrotondato + " mm";
+
+      // Mostra il risultato
+      const risultatoElement = document.getElementById("risultato");
+      risultatoElement.textContent = `Centro Gola: ${risultatoArrotondato} mm`;
+      //risultatoElement.style.display = 'block';
+
+      // Salva nel database
+      const calcolo = {
+        id: Date.now(),
+        timestamp: new Date().toLocaleString('it-IT'),
+        tipo: tipo,
+        fondo: fondo,
+        raggio1: raggio1,
+        raggio2: raggio2,
+        raggiomedio: raggio,
+        centroGola: parseFloat(risultatoArrotondato),
+      };
+
+      storicoCalcoli.unshift(calcolo); // Aggiunge in cima
+
+      // Mantieni solo gli ultimi 50 calcoli
+      if (storicoCalcoli.length > 50) {
+        storicoCalcoli = storicoCalcoli.slice(0, 50);
+      }
+
+      localStorage.setItem('storicoCalcoli', JSON.stringify(storicoCalcoli));
+      aggiornaStorico();
+      aggiornaSelectValori();
+
+      // Mostra notifica di successo
+      Swal.fire({
+        icon: 'success',
+        title: 'Calcolo Completato!',
+        text: `Centro Gola: ${risultatoArrotondato} mm`,
+        timer: 2000,
+        showConfirmButton: false
+      });
     }
+
+    function aggiornaStorico() {
+      const storicoElement = document.getElementById('storico');
+
+      if (storicoCalcoli.length === 0) {
+        storicoElement.innerHTML = '<p class="text-muted text-center">Nessun calcolo salvato</p>';
+        return;
+      }
+
+      let html = '';
+      storicoCalcoli.forEach((calcolo, index) => {
+        html += `
+          <div class="history-item">
+            <div class="d-flex justify-content-between align-items-start">
+              <div class="flex-grow-1">
+                <small class="text-muted">${calcolo.timestamp}</small>
+                <div><strong>${calcolo.tipo}</strong> - Centro Gola: <span class="text-primary">${calcolo.centroGola} mm</span></div>
+                <small>Fondo: ${calcolo.fondo}mm | Sfere: ${calcolo.raggio1}/${calcolo.raggio2}mm</small>
+                ${calcolo.note ? `<div><small class="text-info"><i class="bi bi-sticky"></i> ${calcolo.note}</small></div>` : ''}
+              </div>
+              <button class="btn btn-sm btn-outline-danger ms-2" onclick="rimuoviCalcolo(${index})" title="Rimuovi">
+                <i class="bi bi-x"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      storicoElement.innerHTML = html;
+    }
+
+    function aggiornaSelectValori() {
+      const select1 = document.getElementById('valore1Select');
+      const select2 = document.getElementById('valore2Select');
+
+      // Svuota le select
+      select1.innerHTML = '<option value="">Seleziona primo valore</option>';
+      select2.innerHTML = '<option value="">Seleziona secondo valore</option>';
+
+      // Aggiungi le opzioni
+      storicoCalcoli.forEach((calcolo, index) => {
+        const option1 = new Option(
+          `${calcolo.centroGola}mm (${calcolo.tipo} - ${calcolo.timestamp.split(' ')[1]})`,
+          calcolo.centroGola
+        );
+        const option2 = new Option(
+          `${calcolo.centroGola}mm (${calcolo.tipo} - ${calcolo.timestamp.split(' ')[1]})`,
+          calcolo.centroGola
+        );
+
+        select1.add(option1);
+        select2.add(option2);
+      });
+    }
+
+    function eseguiOperazione() {
+      const valore1 = parseFloat(document.getElementById('valore1Select').value);
+      const valore2 = parseFloat(document.getElementById('valore2Select').value);
+      const operazione = document.getElementById('operazioneSelect').value;
+
+      if (isNaN(valore1) || isNaN(valore2)) {
+        Swal.fire('Errore', 'Seleziona entrambi i valori per l\'operazione!', 'error');
+        return;
+      }
+
+      let risultato;
+      let simbolo;
+
+      if (operazione === '+') {
+          risultato = valore1 + valore2;
+          simbolo = '+';
+      }else if (operazione === '-'){
+          risultato = valore1 - valore2;
+          simbolo = '-';
+      }
+
+      risultato = risultato.toFixed(3);
+
+      document.getElementById('risultatoOperazione').textContent =
+        `${valore1} ${simbolo} ${valore2} = ${risultato} mm`;
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Operazione Completata',
+        html: `<h4>${valore1} ${simbolo} ${valore2} = <span class="text-primary">${risultato} mm</span></h4>`,
+        showCancelButton: true,
+        confirmButtonText: 'Salva Risultato',
+        cancelButtonText: 'Chiudi'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Salva il risultato dell'operazione come nuovo calcolo
+          const calcolo = {
+            id: Date.now(),
+            timestamp: new Date().toLocaleString('it-IT'),
+            tipo: 'OP',
+            fondo: 0,
+            raggio1: valore1,
+            raggio2: valore2,
+            raggiomedio: (valore1 + valore2) / 2,
+            centroGola: parseFloat(risultato),
+            note: `Operazione: ${valore1} ${simbolo} ${valore2}`
+          };
+
+          storicoCalcoli.unshift(calcolo);
+          localStorage.setItem('storicoCalcoli', JSON.stringify(storicoCalcoli));
+          aggiornaStorico();
+          aggiornaSelectValori();
+        }
+      });
+    }
+
+    function rimuoviCalcolo(index) {
+      Swal.fire({
+        title: 'Rimuovere questo calcolo?',
+        text: 'Questa azione non può essere annullata.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sì, rimuovi',
+        cancelButtonText: 'Annulla'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          storicoCalcoli.splice(index, 1);
+          localStorage.setItem('storicoCalcoli', JSON.stringify(storicoCalcoli));
+          aggiornaStorico();
+          aggiornaSelectValori();
+        }
+      });
+    }
+
+    function cancellaStorico() {
+      Swal.fire({
+        title: 'Cancellare tutto lo storico?',
+        text: 'Questa azione rimuoverà tutti i calcoli salvati e non può essere annullata.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sì, cancella tutto',
+        cancelButtonText: 'Annulla'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          storicoCalcoli = [];
+          localStorage.removeItem('storicoCalcoli');
+          aggiornaStorico();
+          aggiornaSelectValori();
+          document.getElementById('risultatoOperazione').textContent = '';
+          Swal.fire('Cancellato!', 'Lo storico è stato cancellato.', 'success');
+        }
+      });
+    }
+
 
     function azzeraCampi() {
       document.getElementById("fondo").value = '';
       document.getElementById("raggio1").value = '';
       document.getElementById("raggio2").value = '';
-      document.getElementById("risultato").textContent = '';
+      document.getElementById("note").value = '';
+      document.getElementById("risultato").style.display = 'none';
       document.getElementById("tipo").value = 'IR';
+      document.getElementById('risultatoOperazione').textContent = '';
     }
-    /*function info() {
-      Swal.fire({
-        title: "Calcolo differenza spostamento:",
-        html: '<h4>da AR ad AR e IR ad IR = R1-R2;<br> da AR ad IR e IR ad AR = R1+R2;</h4>',
-        icon: "info",
-        //rende piu piccolo
-        popup: 'small-alert'
-      });
-    }*/
+
     function info() {
       Swal.fire({
         title: '<span style="color: #007bff;">Calcolo differenza spostamento:</span>',
         html: `
-      <div style="font-size: 14px; color: #333;">
-        <span style="color: green;">da AR ad AR e IR ad IR</span> = <strong>R1 - R2</strong><br>
-        <span style="color: red;">da AR ad IR e IR ad AR</span> = <strong>R1 + R2</strong>
-      </div>
-    `,
+          <div style="font-size: 14px; color: #333; text-align: left;">
+            <p><span style="color: green;"><strong>da AR ad AR e IR ad IR</strong></span> = <strong>R1 - R2</strong></p>
+            <p><span style="color: red;"><strong>da AR ad IR e IR ad AR</strong></span> = <strong>R1 + R2</strong></p>
+            <hr>
+            <h6>Funzionalità:</h6>
+            <ul style="font-size: 12px;">
+              <li>✓ Calcoli salvati automaticamente</li>
+              <li>✓ Operazioni tra valori salvati</li>
+            </ul>
+          </div>
+        `,
         icon: "info",
         customClass: {
           popup: 'small-alert'
         }
       });
     }
-    function calcolatrice() {
-      Swal.fire({
-        title: '<span style="color: #007bff;">Apri calcolatrice?</span>',
-        showCancelButton: true,
-        confirmButtonText: 'Apri',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.href = 'calculator://'; // Solo se un protocol handler è registrato
-        }
-      });
+
+
+    function clearCalc() {
+      document.getElementById('calcDisplay').value = '0';
     }
-  </script>
-  <script>
-  let valoriCentroGola = [];
 
-  // Intercetta il bottone "Calcola" senza modificare la funzione originale
-  const originalCalcola = calcolaCentroGola;
-  calcolaCentroGola = function () {
-    originalCalcola();
-
-    const risultatoTesto = document.getElementById("risultato").textContent;
-    const match = risultatoTesto.match(/([\d.]+) mm/);
-    if (match) {
-      const valore = parseFloat(match[1]);
-      if (!isNaN(valore)) {
-        valoriCentroGola.push(valore);
-        if (valoriCentroGola.length > 2) {
-          valoriCentroGola.shift(); // mantiene solo gli ultimi 2
-        }
+    function deleteLast() {
+      const display = document.getElementById('calcDisplay');
+      if (display.value.length > 1) {
+        display.value = display.value.slice(0, -1);
+      } else {
+        display.value = '0';
       }
     }
-  };
 
-  // Aggiungiamo un pulsante per sommare i due valori memorizzati
-  const btnSomma = document.createElement("button");
-  btnSomma.textContent = "Somma Ultimi 2";
-  btnSomma.className = "btn btn-warning w-100 mt-3";
-  btnSomma.onclick = function () {
-    if (valoriCentroGola.length < 2) {
-      Swal.fire("Attenzione", "Devi calcolare almeno 2 valori prima!", "warning");
-    } else {
-      const somma = (valoriCentroGola[0] + valoriCentroGola[1]).toFixed(3);
-      Swal.fire("Somma Ultimi 2 Valori", "Risultato: " + somma + " mm", "success");
+    function appendToCalc(value) {
+      const display = document.getElementById('calcDisplay');
+      if (display.value === '0' && value !== '.') {
+        display.value = value;
+      } else {
+        display.value += value;
+      }
     }
-  };
 
-  window.addEventListener("load", () => {
-    document.querySelector(".card-body").appendChild(btnSomma);
-  });
-</script>
+    function calculateResult() {
+      const display = document.getElementById('calcDisplay');
+      try {
+        // Sostituisci i simboli per la valutazione
+        let expression = display.value.replace(/×/g, '*').replace(/−/g, '-');
+        const result = Function('"use strict"; return (' + expression + ')')();
+        display.value = parseFloat(result.toFixed(6)).toString();
+      } catch (error) {
+        display.value = 'Errore';
+        setTimeout(() => {
+          display.value = '0';
+        }, 1500);
+      }
+    }
 
+
+  </script>
 
 </body>
 
